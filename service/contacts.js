@@ -1,31 +1,27 @@
 const Contact = require("./contactSchema");
 
-const getAllContacts = async (owner, favorite, page, limit) => {
-    const skip = (page - 1) * limit;
-    if (favorite && favorite.toLowerCase() === "true") {
-        return Contact.find({ owner, favorite: true }).skip(skip).limit(limit);
-    }
-    return Contact.find({ owner }).skip(skip).limit(limit);
+const getAllContacts = async () => {
+    return Contact.find();
 };
 
-const getContactById = async (contactId, owner) => {
-    return Contact.findById({_id: contactId, owner});
+const getContactById = async (contactId) => {
+    return Contact.findById({ _id: contactId});
 };
 
-const removeContact = async (contactId, owner) => {
-    return Contact.findByIdAndRemove({_id: contactId, owner});
+const removeContact = async (contactId) => {
+    return Contact.findByIdAndRemove({_id: contactId});
 };
 
-const createContact = async (name, email, phone, owner) => {
-    return Contact.create(name, email, phone, owner);
+const createContact = async (name, email, phone) => {
+    return Contact.create(name, email, phone);
 };
 
-const updateContact = async (contactId, owner, fields) => {
-    return Contact.findByIdAndUpdate({_id: contactId, owner }, fields);
+const updateContact = async (contactId, body) => {
+    return Contact.findByIdAndUpdate({_id: contactId }, body);
 };
 
-const updateStatusContact = async (contactId, favorite, owner) => {
-    const contact = Contact.findById({_id: contactId, owner});
+const updateStatusContact = async (contactId, favorite) => {
+    const contact = Contact.findById({_id: contactId});
         if(!contact) {
             return null;
         }
