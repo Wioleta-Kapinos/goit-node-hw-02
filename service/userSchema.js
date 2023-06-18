@@ -31,14 +31,6 @@ userSchema.methods.validPassword = function(password) {
   return bCrypt.compareSync(password, this.password);
 };
 
-userSchema.methods.setSubscription = function (subscription) {
-  this.subscription = subscription;
-};
-
-userSchema.methods.setToken = function (token) {
-  this.token = token;
-};
-
 const User = mongoose.model("user", userSchema);
 
 module.exports = User;
