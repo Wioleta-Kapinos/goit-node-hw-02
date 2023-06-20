@@ -68,7 +68,7 @@ const logIn = async (req, res, next) => {
 
 const logOut = async (req, res, next) => {
     const { _id } = req.user;
-    const user = await User.findOne({ _id });
+    const user = await User.findById({ _id });
   
     if (!user) {
       return res.status(401).json({ message: "Not authorized" });
@@ -81,7 +81,8 @@ const logOut = async (req, res, next) => {
 
 const getCurrent= async (req, res, next) => {
     try {
-      const user = req.user;
+      const user = await User.findById(req.user.userId);
+      console.log(user);
       if (!user) {
         return res.status(401).json({ message: "Not authorized" });
       }
