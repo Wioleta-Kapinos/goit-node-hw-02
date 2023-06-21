@@ -55,9 +55,15 @@ const logIn = async (req, res, next) => {
       };
     
       const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+      user.setToken(token);
+      await user.save();
       res.status(200).json({
             data: {
-                token,
+                token: user.token,
+                user: {
+                  email: user.email,
+                  subscription: user.subscription,
+                },
             },
         });
     } catch (error) {
