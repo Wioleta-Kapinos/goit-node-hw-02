@@ -85,14 +85,13 @@ const logOut = async (req, res, next) => {
     return res.status(204).send();
 };
 
-const getCurrent= async (req, res, next) => {
+const getCurrent = async (req, res, next) => {
     try {
-      const user = await User.findById(req.user.userId);
-      console.log(user);
+      const user = req.user;
       if (!user) {
         return res.status(401).json({ message: "Not authorized" });
       }
-      
+      console.log(user);
       res.status(200).json({
         data: {
           user: {
