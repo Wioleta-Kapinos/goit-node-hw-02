@@ -19,7 +19,7 @@ const updateStatusSchema = Joi.object({
 
 const get = async (req, res, next) => {
     try {
-        const results = await service.getAllContacts();
+      const results = await service.getAllContacts();
         res.status(200).json(results); 
     } catch (error) {
         console.error(error);
@@ -85,7 +85,7 @@ const update = async (req, res, next) => {
       if (error) {
         res.status(400).json({ message: error.message });
       } else {
-        const result = await service.updateContact(contactId, {
+        const result = await service.updateContact(contactId,{
           name, email, phone,
         });
         if (result) {
