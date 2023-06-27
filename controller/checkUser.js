@@ -5,7 +5,6 @@ require("dotenv").config();
 const secret = process.env.SECRET;
 const gravatar = require("gravatar");
 const fs = require("fs");
-const path = require("path");
 const operationAvatar = require("../service/avatar");
 
 const validateUserSchema = Joi.object({
@@ -112,7 +111,7 @@ const getCurrent = async (req, res, next) => {
     }
 };
 
-const setAvatar = async (res, req, next) => {
+const setAvatar = async (req, res, next) => {
   try {
     const avatar = req.file;
     const { user } = req;
@@ -120,7 +119,7 @@ const setAvatar = async (res, req, next) => {
       return res.status(401).json({ message: "Not Authorized" });
     }
 
-    const filename = `${path.extname(avatar.originalname)}`;
+    const filename = Date.now() + "-" + avatar.originalname; 
     const avatarFolder = "./public/avatars";
 
     if (!fs.existsSync(avatarFolder)) {
