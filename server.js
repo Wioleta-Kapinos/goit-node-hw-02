@@ -16,7 +16,7 @@ app.listen(3000, () => {
 
 connection
   .then(() => {
-       console.log("Database connection successful.");
+      console.log("Database connection successful.");
   })
   .catch((error) => {
         console.log("Database connection error.", error.message);
