@@ -3,6 +3,9 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secret = process.env.SECRET;
+const gravatar = require("gravatar");
+const fs = require("fs");
+const operationAvatar = require("../service/avatar");
 
 const validateUserSchema = Joi.object({
     email: Joi.string().email().required(),
@@ -11,23 +14,25 @@ const validateUserSchema = Joi.object({
 
 const register = async(req, res, next) => {
     const { email, password } = req.body;
+    const avatarURL = gravatar.url(email, { s: "250", r: "pg", d: "retro" }, true);
     try {
         const { error } = validateUserSchema.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.message});
         }
 
-        const userExist = await User.findOne({email});
-        if(userExist) {
+        const user = await User.findOne({email});
+        if(user) {
           return res.status(409).json({ message: "Email in use" });
         }
 
-        const newUser = new User({ email});
+        const newUser = new User({ email, avatarURL });
         newUser.setPassword(password);
         await newUser.save();
         res.status(201).json({
             user: {
                 email: newUser.email,
+                avatarURL: newUser.avatarURL,
                 subscription: newUser.subscription,
             },
         });
@@ -105,10 +110,36 @@ const getCurrent = async (req, res, next) => {
         next(error);
     }
 };
+
+const setAvatar = async (req, res, next) => {
+  try {
+    const avatar = req.file;
+    const { user } = req;
+    if (!user) {
+      return res.status(401).json({ message: "Not Authorized" });
+    }
+
+    const filename = Date.now() + "-" + avatar.originalname; 
+    const avatarFolder = "./public/avatars";
+
+    if (!fs.existsSync(avatarFolder)) {
+      fs.mkdirSync(avatarFolder, { recursive: true });
+    }
     
+    await operationAvatar(avatar, filename);
+
+    user.avatarURL = `/avatars/${filename}`;
+    await user.save();
+
+    return res.status(200).json({ avatarURL: user.avatarURL });
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
     register,
     logIn,
     logOut,
     getCurrent,
+    setAvatar,
 };
