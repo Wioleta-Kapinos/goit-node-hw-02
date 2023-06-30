@@ -3,7 +3,6 @@ const ctrlUsers = require("../../controller/checkUser");
 const auth = require("../../auth/auth");
 const multer = require("multer");
 const fs = require("fs");
-const path = require("path");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -34,5 +33,9 @@ router.get("/logout", auth, ctrlUsers.logOut);
 router.get("/current", auth, ctrlUsers.getCurrent);
 
 router.patch("/avatars", auth, upload.single("avatar"), ctrlUsers.setAvatar);
+
+router.get("/verify/:verificationToken", ctrlUsers.verifyEmail);
+
+router.post("/verify", ctrlUsers.resendEmail);
 
 module.exports = router;
